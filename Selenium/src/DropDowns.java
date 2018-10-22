@@ -22,8 +22,8 @@ public class DropDowns {
 		driver.findElement(By.xpath("//input[@id='ctl00_mainContent_ddl_originStation1_CTXT']")).click();
 		driver.findElement(By.xpath("//a[@value ='HBX']")).click();
 		driver.findElement(By.xpath("(//a[@value ='TCR'])[2]")).click();
-		//driver.close();
-		//driver.quit();
+		driver.close();
+		driver.quit();
 	}
 
 }
