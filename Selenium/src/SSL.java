@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -5,8 +6,8 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class SSL {
-	
-	public static void main(String[] args) {
+	@Test
+	public void SSLCertTest() {
 		System.setProperty("webdriver.chrome.driver", "C:\\Users\\sriram\\Desktop\\Selenium\\chromedriver\\chromedriver.exe");
 		DesiredCapabilities cap = DesiredCapabilities.chrome();
 		cap.acceptInsecureCerts();

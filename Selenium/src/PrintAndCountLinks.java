@@ -1,6 +1,7 @@
 import java.util.Iterator;
 import java.util.Set;
 
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -9,7 +10,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 // http://qaclickacademy.com/practice.php
 public class PrintAndCountLinks {
-	public static void main(String[] args) throws InterruptedException {
+	@Test
+	public void main() throws InterruptedException {
 		System.setProperty("webdriver.chrome.driver",
 				"C:\\Users\\sriram\\Desktop\\Selenium\\chromedriver\\chromedriver.exe");
 		WebDriver driver = new ChromeDriver();
