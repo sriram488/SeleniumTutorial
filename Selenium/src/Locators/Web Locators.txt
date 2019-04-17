@@ -1,0 +1,298 @@
+
+In the previous chapter, we learned a few basic locator types, IDs, names, and class names. However, not all elements have one of these. Let's talk about an advanced locator type. They can help us find more types of elements, CSS Selectors.
+
+CSS Selectors are expressions that use pattern matching to find elements on a webpage.
+
+CSS documents use these selectors to apply style to elements. For example, take another look at that CSS document we saw on a previous chapter.
+
+
+body {
+
+  background-color: lightblue;
+
+}
+
+.main-content {
+
+  Font-family: Helvetica;
+
+}
+
+These lines here for body and for main-content are actually CSS Selectors.
+
+CSS Selectors are often a bit more complex than our simple example. Let's look at some examples together of DuckDuckGo search results page.
+
+The most basic type of CSS Selector is simply a tag name. I could type "body" or "div", or any other type of tag name in, and that would be a valid CSS Selector, although it's probably not a very useful one, in and of itself.
+
+Locate by tag name — div
+
+What I can do to make it slightly more useful is to attach a class name. If I put a dot, and then the class name (for example, "div.result"), this will select all elements that have both this tag name of div and that contain a class called "result".
+
+Notice how that's not a class equals but rather a class contains. This particular element has multiple classes, one of which is "result". And, there are 11 such elements that match the selector on this page.
+
+I could also loosen this CSS selector a little bit. Instead of forcing it to be div elements that have the "result" class, I could search for simply any elements that have the result class. On this particular page, all elements that have the "result" class do have the div tag type, but that may not be true for all other cases.
+
+So, if I just want to search by class name alone, do a dot, and then the class name: .result
+
+I could also search by ID.
+
+Let's take a look at the search bar. The search bar we know has an id of search_form_input.
+
+If I wanted to write a CSS Selector that use that id I start with a hashtag, or the pound sign or number, whatever you want to call it, and I type in that:
+
+Locate by ID
+
+#search_form_input
+And, boom! It uniquely identified that one element.
+
+So far, these examples have been pretty trivial, but one way that CSS Selectors really shine is that they can chain together ancestor-descendant relationships or parent-child relationships of elements.
+
+Let's say I want to go back to that div.result.
+
+Now these results could appear anywhere on the page. If I wanted to limit them to a container, I could add an ancestor selector at the top such as:
+
+Locate by descendants
+
+div.cw.div.result
+That will guarantee that I will only select all the div.result elements if they are descendants of the div.cw element or elements.
+
+This parent anchor makes sure that you can avoid false positives in case there are div result elements in other parent containers that maybe you don't want to select. If I look at where the div.cw is, I can see that there's two — one of which is at the header, and the other of which is the main body of results.
+
+I could also do direct parent-child relationships rather than ancestor-descendant relationships.
+
+If I use the arrow bracket (>), that forces a direct parent-child relationship (ex. div.cw > div.result).
+
+Notice here once I did that, my result count went down to zero. That's because the div.result elements are not direct children of div.cw.
+
+Let's look at an example where we do have direct parent-child relationships.
+
+Let's come up here to the search links.
+
+Notice here how I have these list items that all had the "zcm__item" class. I could select them, "li.zcm__item", and there are four. But let's say I don't want to get the list item, but I want to get that link within the list item. Boom, I could do it like this, with the direct child being that a element:
+
+Locate by Direct Children
+
+li.zcm__item > a
+Now, I'm selecting the link instead of the list item.
+
+Now, what if I want to combine CSS Selectors?
+
+Let's say that I want to get all lists on the page, whether they are ordered lists or unordered list ("ol, ul").
+
+Anytime I use a comma for a CSS Selector, it acts sort of like a logical OR, meaning I want to get all elements that match this selector or that match this selector. These are selector expressions not just tag names, so I could do something like this:
+
+Locate by multiple selectors
+
+ol > li, ul > li
+Here, I've selected now all of the list items that appear in either ordered lists or unordered lists.
+
+Another very powerful facet of CSS Selector syntax is the ability to select elements based on their attributes.
+
+Anytime I want to check attributes, I use this square angle brackets ([ ]). In here, I put the conditions on the attribute that I want.
+
+Let's say I want to find all elements that contained a style attribute:
+
+Locate by attribute existence
+
+[style]
+On this page, there are only 15 elements that contain that attribute, as we can see here. This one has it. This one has it. This one has it.
+
+I can limit this further to say I want to get only the div elements with a style attribute like this:
+
+Locate by tag with attribute
+
+div[style]
+Notice how our total result count drops from 15 down to seven. That's because the div tag limited our selection further.
+
+I could also check for attribute equality.
+
+Let's say I want to select one of these links, specifically based on an attribute value. The links have this data-zci-link attribute. I could say "a[data-zci-link]" and that shows that there are four elements that contain that attribute.
+
+But if I wanted to check for a particular value, such as images:
+
+Locate by tag with attribute equality
+
+a[data-zci-link = 'images']
+Boom, this selector uniquely locates the images link in those top links. That's pretty useful.
+
+Now, equality for attributes may not always be the best choice.
+
+If we remember our div.result selector before, I could also write that like this — div[class = 'result'] — because class is an attribute, result. Now, why is this not showing anything? That's because equality is a harsh operator. It must equal whatever value you put in exactly.
+
+Sometimes, I want to check if it _contains_. If we want to do a contains relationship, I need to use the asterisk with my equal sign operator:
+
+Locate by tag with attributes contains
+
+div[class* = 'result']
+And now, I'll get back those results.
+
+We can do even more advanced conditions with pseudo-classes.
+
+Remember how, before, when we search for all divs, it contained the result class, that there was one element at the bottom of the page that we didn't want, which was this "More Results" button.
+
+I can do something like this. If I look at this particular div, I can see that it has this "results-more" class. If I search for any divs that have "result--more", I'll see that that's the only one that's unique.
+
+What I want to do is I want to say, "Give me all the div results that do not also contain the 'results' or the 'result—more' class":
+
+Locate by logical not pseudoclass
+
+div.result:not(.result--more)
+This ":not" is my pseudo-class, and it means: take everything of this particular selector (div.result) but exclude anything that matches this CSS Selector (.result--more). In that case, notice how my results went from 11 to 10. If I look at all the results, that "More Results" button is no longer part of it.
+
+Let's say that I wanted to get the third element in this list.
+
+I could use the "Nth child pseudoclass" passed in a three, and I'll get the third element of the results:
+
+Locate by Nth child pseudoclass
+
+div.result:nth-child(3)
+Now, I could do this for, say, five or six, or whatever index that I want. Nth child is pretty helpful in that regard.
+
+Let's do one more example together. Take a look down here at the bottom of the page in the footer.
+
+There are these different cards providing information and links for different topics.
+
+If I select one of these, I can see that there are different elements inside. There's the link itself. There's a header, an image icon, and the paragraph.
+
+I can easily use similar CSS Selectors to get all these different kinds of elements together via chaining.
+
+If I were to write a CSS Selector, I would try to find a parent element that is appropriate. Starting at the footer, I noticed that there's this div specifically set aside for footer cards (div.footer_cards). I would start there.
+
+Then to get whatever card I would want, it looks like I would go to the a element. Let's say I want to get the tips card. What makes this particular a element unique is the data-id for "tips". I could say "a[data-id='tips']" and that would give me the link for that.
+
+If I wanted to get sub elements in there, I could do it by tag name like "img" or "h3" or "p", or I could even do it by their class names. I could say "footer_card_icon", so on and so forth.
+
+Locate by the link itself
+
+div.footer_cards a[data-id='traffic']
+Locate by the title
+
+div.footer_cards a[data-id='traffic'] .footer__card__title
+Locate by the icon
+
+div.footer_cards a[data-id='traffic'] .footer__card__icon
+Locate by the text
+
+div.footer_cards a[data-id='traffic'] .footer__text
+Optionally, I could add that direct parent-child arrow ">", but that is unnecessary.
+
+div.footer_cards a[data-id='tips'] > .footer_card_icon
+What would be best is to keep things simple enough but understandable and unique.
+
+Keep that in mind as you start writing your own CSS Selectors. CSS Selectors are great web element locators.
+
+They can be much more specific than IDs and class names for the elements they select. They also use CSS syntax, so most web developers already know how to use them.
+
+There are many, many more rules than we covered here today. However, they can also become complex and sometimes, unnecessarily complex.
+
+Always makes you're to test your CSS Selectors when writing them.
+
+Furthermore, CSS Selectors are not all powerful. They cannot uniquely identify any given element on the page. CSS Selectors can never select elements by text context, and they cannot always select elements by index.
+
+For that, we will need XPaths.
+
+
+
+
+
+
+
+
+
+
+
+
+### Basic CSS Selector Examples
+
+Tag name: div
+
+Class name: .result
+
+Tag and class name: div.result
+
+ID: #search_form_input
+
+Descendants: div.cw div.result
+
+Direct children: li.zcm__item > a
+
+Multiple selectors: ol, ul
+
+Attribute existence: [style]
+
+Tag with attribute: div[style]
+
+Tag with attribute equality: a[data-zci-link='images']
+
+Tag with attribute contains: div[class*='results']
+
+Logical not pseudoclass: div.result:not(.result--more)
+
+Nth child pseudoclass: div.result:nth-child(5)
+
+
+
+
+
+
+
+
+Basic Xpath Rules and Examples
+Path from root
+
+/html/body
+
+Tag anywhere
+
+//input
+
+Direct Children
+
+//ul/li/a
+
+Descendants
+
+//div/a
+
+Any Element
+
+//*
+
+Any Descendants
+
+//div//*
+
+Attribute Value Equality
+
+//li[@class='zcm__item']
+
+Attribute Condition AND
+
+//img[@width<20][@height<20]
+
+//img[@width<20 and @height<20]
+
+Attribute Condition OR
+
+//input[@name='q' or @id='search_form_input']
+
+Contains Function
+
+//div[contains(@class, 'result')]
+
+//div[contains(@class, 'result__snippet')]
+
+Starts with function
+
+//div[starts-with(@class, 'result')]
+
+Logical not function
+
+//a[not(contains(@class, 'header'))]
+
+There are many, many other XPath functions available. I encourage you to go look them up online and learn about them.
+
+
+
+
+https://developer.mozilla.org/en-US/docs/Web/XPath/Functions 

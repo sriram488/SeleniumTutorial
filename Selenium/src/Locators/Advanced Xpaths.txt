@@ -1,0 +1,90 @@
+Let's continue learning about XPaths.
+
+The examples from the previous chapter could've all been written using CSS Selectors. So, what are specific things XPath can do that CSS Selectors cannot? Three major things are text, indices, and relational positions.
+
+Let's return to the DuckDuckGo search results page for some more examples.
+
+The first major ability is selecting elements by text.
+
+Sometimes, elements do not have any unique attributes, and the only way to select an element is by its text content. Other times, text can be used as an effective filter.
+
+For example, let's say we want to find only the result snippets that mention a specific word like "bamboo".
+
+If we look up the result snippets, I can see it's a div with a result snippet class. If I were to write my XPath, it could look like this: contains class "result__snippet".
+
+//div[contains(@class, 'result__snippet')
+That will give me all of the result snippets.
+
+If I want to filter by text, I can add another condition using the contains function, the text containing the word "bamboo":
+
+//div[contains(@class, 'result__snippet')][contains(., 'bamboo')]
+And we can see I have five results, one of them here containing the word "bamboo".
+
+This little dot right here (the one before the comma and bamboo) will get the text displayed for the element.
+
+There's also a text function like this: contains(text(), 'bamboo')], but that will get only the direct textural content of the element, not the full text for many descendants included. That's why typically when I check by text, I prefer the dot operator like this.
+
+We could also change this up a little bit. Perhaps we want to find only result snippets that do not contain the word bamboo. I can easily use my not function like this, and I'll get all the other snippets.
+
+//div[contains(@class, 'result__snippet')][not(contains(., 'bamboo'))]
+In this case, this one as we can see does not contain bamboo.
+
+The second major ability for XPath is selecting elements by index.
+
+CSS Selectors have some capability for indexing with pseudo classes like Nth child or last child, but that doesn't work for all cases. XPath can put indexes on any element.
+
+For example, let's say we want to get the third result snippet from our list. If I go back to the XPath we had and simplify it so that it gets any of those result snippets, what I can do is I can surround it by parentheses like this, and then in square brackets at the end of it, I can put an index such as the third "'result__snippet":
+
+(//div[contains(@class, 'result__snippet')])[3]
+And we can see highlighted there, 1, 2, 3, boom, that's the third in the list. I could do others like fourth or second or ninth. Any index should work so long as it's in the list.
+
+Note that XPath indices start with 1 and not 0 (this means that the third position is index 3, not index 2 as it would be the case in most programming languages). The parentheses around the XPath expression makes sure that the index is applied correctly.
+
+Caution
+
+I do want to give words of caution though — text and indices make for fragile locators.
+
+Element text is more likely to change than other anchors, as people change page content. Element text also won't work well when a web page is translated into other languages for internationalization and localization.
+
+Indexes are based entirely upon element count and order, which could easily be changed by developers. Index numbers also don't always convey much meaning and can add confusion, whereas other attributes are often more descriptive and intuitive. Therefore, I recommend using text and indices in locators only when absolutely necessary.
+
+The third major ability for XPath is finding elements relative to other elements using advanced relationships.
+
+This is helpful when the desired element doesn't have a decent anchor of its own, or when trying to select a range of elements in a list.
+
+Let's say we want to get all links on the page that have an image inside of them. I could write a locator like this: //a to get any link on the page, square brackets for a conditional statement, and then .//image:
+
+//a[.//img]
+If we look at the elements selected, we can see these are all the images that if we were to click would send us to a new page. If we look at the source code for the elements, we can see the element that is selected is the a link and immediately as a child, it has an image element within it.
+
+That's what this image XPath is here. Notice that it is inside these square brackets for the conditional expression. This XPath essentially says: "I was to select the a elements for which inside of the A element, there is an image element as a descendant." The dot tells the XPath to start from the current note, and these double slashes just mean any descendant.
+
+XPath also has a bunch of axes for relationships to the current node.
+
+Axes can sometimes be brain-benders, so I try to avoid them in order to keep my XPaths simple. However, they can be useful for tough cases. The two most useful axes I found are the "preceding" and "following" axes.
+
+Let's say that we want to get the links underneath the search bar. If I find them in source of the page, I can see that they all have this class "zcm__link". I can write an XPath like this:
+
+//a[contains(@class, 'zcm__link')]
+And that will locate those four different links on the page.
+
+If I want to get only the links after the web link, if I look at the web link, I can see that it has a unique "data-zci-link" named "web". I could update my XPath like this:
+
+//a[contains(@class, 'zcm__link')][preceding::a[@data-zci-link='web']]
+What this locates are those three links that come after the web link.
+
+Be careful. The "preceding" axes doesn't select links that come before the web link. It selects the links that have the web link come before it.
+
+Likewise, if I want to get only the links before the videos link, I could use the following axes instead:
+
+//a[contains(@class, 'zcm__link')][following::a[@data-zci-link='videos']]
+Instead of web, I would type videos. And we can see we'll get web and images, that two links that come before videos.
+
+As a side note, these axes will check preceding and following elements anywhere in the DOM. To limit the checks to children of the same parent, use the "preceding-sibling" and "following-sibling" axes instead.
+
+Historically, CSS Selectors have been favored over XPaths for two main reasons: simplicity and speed.
+
+However, both of these reasons are somewhat doubtful. CSS Selectors and XPaths both have similarly complex language with XPath being only slightly more verbose. Anecdotally, I haven't witnessed much of a performance difference between the two and some more recent experiments you can find online by others have shown no statistically significant performance difference between the two across several browsers. So, take that as face value.
+
+Overall though, XPaths are a very powerful locator type. They may be overkill for many circumstances, but don't feel guilty about using XPaths whenever they are needed.
+
